@@ -39,13 +39,15 @@ def run_lock(root: Path, wait_seconds: float = 0.2):
                 if age > STALE_SECONDS:
                     path.unlink()
                     continue
-            except OSError:  # hygiene: allow a concurrent removal; the retry decides
+            # hygiene: allow concurrent removal; the retry decides
+            except OSError:
                 pass
             if time.monotonic() >= deadline:
                 owner = ""
                 try:
                     owner = path.read_text(encoding="utf-8").strip()
-                except OSError:  # hygiene: allow the lock owner is optional in the message
+                # hygiene: allow lock-owner text is optional
+                except OSError:
                     pass
                 raise ReforgeError(
                     f"Another Reforge operation is active in {Path(root)}.",

@@ -13,7 +13,7 @@
     "reforge/detectors.py": "6ec6abb0b5f40e2e9af7ad8a5d6dfd1636e49e57d36530b0cef85c47f5b926fa",
     "reforge/errors.py": "32bd85eac70ba9b8ab05bfba54d349d9d004d28d70bb36804f9449b7bd6ad8e7",
     "reforge/git_history.py": "641610d4b87d77b887af6842fa5f14e235fea7413d4fc3aeae1ee316ed2a64f1",
-    "reforge/locking.py": "0d387b720b6f9263c12735d10df1876cd3bb9515171a4018d63eb289235344ba",
+    "reforge/locking.py": "d074a8567b031179304ca8b01de3159b9e16c8a733e5b651c0c93610ce5e44a4",
     "reforge/model.py": "d23b88832006ec8a1ee4c583af627d96ccd7109d600b8ae2a586446c9559d7bf",
     "reforge/pipeline.py": "9fd4eda717f6974453c0080e2da28bd9a14738664da4f90e4bc0afe053d2495f",
     "reforge/repair.py": "dd827814a9ce35a5a13bf7ade4c23b3c396a0479daa6991d56368b209a59768c",
