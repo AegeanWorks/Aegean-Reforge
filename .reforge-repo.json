@@ -2,13 +2,13 @@
   "schema": 1,
   "name": "Aegean Reforge",
   "source": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "synced": {
     "reforge.py": "1867319d11fabae49f7e5a4c946a043aaad329c1d39b326cc03fd1135390d73c",
     "reforge/__init__.py": "42af8fbec0caa4adcb9beed4185d46011a33b3f5bbe972ac3810e29ffc95d153",
     "reforge/__main__.py": "2cbb19c94c6e191c2f32c687621d72798c4b39d6409f8a2e5d6a41dc3e217c6c",
     "reforge/audit.py": "23572f9a7bea34e30fa431e245c32bf8f43c7c25139c47fcb46160d2ab7f57c1",
-    "reforge/cli.py": "cec90e4f4f978769fc7b8c20ef279c9470e0736b327a404086b59310abd08b5d",
+    "reforge/cli.py": "7a175f4e3f7aaf13a92e853e0d78eb90402a7ec3a34fa22c01227658bbc2f06d",
     "reforge/delivery.py": "9a2b3062d8d1781416170efe0499ea96e7f599add363c4a28e9d39790dbb8598",
     "reforge/detectors.py": "6ec6abb0b5f40e2e9af7ad8a5d6dfd1636e49e57d36530b0cef85c47f5b926fa",
     "reforge/errors.py": "32bd85eac70ba9b8ab05bfba54d349d9d004d28d70bb36804f9449b7bd6ad8e7",
@@ -17,9 +17,9 @@
     "reforge/model.py": "d23b88832006ec8a1ee4c583af627d96ccd7109d600b8ae2a586446c9559d7bf",
     "reforge/pipeline.py": "9fd4eda717f6974453c0080e2da28bd9a14738664da4f90e4bc0afe053d2495f",
     "reforge/repair.py": "dd827814a9ce35a5a13bf7ade4c23b3c396a0479daa6991d56368b209a59768c",
-    "reforge/repo_sync.py": "12e58fa0d725f552e5c1856dafec5f3d6795af664e0e2b0e5124e3d2e1ec6ab5",
+    "reforge/repo_sync.py": "d71e8dd7a657eeba8ca6a749d16dfc64230d62bfb067cd30cc7b5d1f497d6f46",
     "reforge/state.py": "935498d8610b9327faf41d1e1bf9a6940c1be9f95bea344e71f04c0ba71d4455",
     "reforge/verification.py": "1938d5665c01a28c1ddb6b3e6e0d076a63fa3a3ddac7875f551c0dccd73cfcb5",
-    "reforge/version.py": "7ba746b771bd85312d24ca56b909181acf184f914b4a7fa8a835114a3eab79f8"
+    "reforge/version.py": "cf33e4d3c0f6174fb99ee7b8b92ed71e18d9e1055a551006101e4d876e8314b4"
   }
 }

@@ -12,6 +12,7 @@ from reforge.git_history import run_git
 from reforge.version import __version__
 
 MARKER = ".reforge-repo.json"
+SYNC_FILE = "reforge-sync.json"
 DEFAULT_TARGET = Path("projects") / "aegean-reforge"
 
 
@@ -19,14 +20,50 @@ def source_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
-def manifest(root: Path) -> List[str]:
+def sync_config(root: Optional[Path] = None) -> Dict[str, str]:
+    """Read the AIKit-side sync file; defaults keep an older checkout working."""
+    root = Path(root) if root else source_root()
+    defaults = {"package": "reforge", "entrypoint": "reforge.py",
+                "standalone": DEFAULT_TARGET.as_posix(), "marker": MARKER}
+    path = root / SYNC_FILE
+    if not path.is_file():
+        return defaults
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ReforgeError(
+            f"Cannot read {path}.",
+            f"the Reforge sync file is not valid JSON: {exc}",
+            "fix the JSON, or delete it to use the documented defaults.",
+        ) from exc
+    if not isinstance(data, dict) or data.get("schema") != 1:
+        raise ReforgeError(
+            f"{path} uses an unsupported sync schema.",
+            "this Reforge reads reforge-sync.json schema 1 only.",
+            "update Reforge, or restore the file from git.",
+        )
+    for key in ("package", "entrypoint", "standalone", "marker"):
+        value = data.get(key, defaults[key])
+        if not isinstance(value, str) or not value or value.startswith(("/", "\\")) \
+                or ".." in Path(value).parts:
+            raise ReforgeError(
+                f"Invalid '{key}' in {path}.",
+                "sync paths are relative to the AIKit checkout and may not escape it.",
+                "use a relative path without '..'.",
+            )
+        defaults[key] = value
+    return defaults
+
+
+def manifest(root: Path, config: Optional[Dict[str, str]] = None) -> List[str]:
     """The shipped Reforge source: its package and standalone shim, never generated docs."""
     root = Path(root)
+    config = config or sync_config(root)
     paths: List[str] = []
-    shim = root / "reforge.py"
+    shim = root / config["entrypoint"]
     if shim.is_file():
-        paths.append("reforge.py")
-    package = root / "reforge"
+        paths.append(config["entrypoint"])
+    package = root / config["package"]
     if package.is_dir():
         for path in sorted(package.rglob("*.py")):
             if "__pycache__" in path.parts:
@@ -64,8 +101,8 @@ def _copy(source: Path, target: Path) -> None:
     target.write_bytes(source.read_bytes())
 
 
-def _marker(target: Path) -> Dict[str, object]:
-    path = target / MARKER
+def _marker(target: Path, marker_name: str = MARKER) -> Dict[str, object]:
+    path = target / marker_name
     if not path.is_file():
         raise ReforgeError(
             f"{target} is not a Reforge standalone repository.",
@@ -150,6 +187,12 @@ use needs the Aegean Commercial License 1.0 (ACL-1.0); see [COMMERCIAL.md](COMME
 CHANGELOG = f"""# Changelog
 
 All notable changes to Aegean Reforge are recorded here.
+
+## [0.2.1] - 2026-10-27
+
+- `reforge-sync.json` names the shipped package, shim, standalone target and marker.
+- Synchronization refuses a two-sided edit and records the last synced hashes.
+- README/CHANGELOG regeneration keeps the standalone lifecycle current.
 
 ## [0.2.0] - 2026-10-27
 
@@ -360,7 +403,8 @@ def init_repo(source: Optional[Path] = None, target: Optional[Path] = None,
               force: bool = False) -> Dict[str, object]:
     """Create the standalone repository with source, docs, CI, issue templates and a first commit."""
     source = Path(source) if source else source_root()
-    target = Path(target) if target else source / DEFAULT_TARGET
+    config = sync_config(source)
+    target = Path(target) if target else source / config["standalone"]
     if target.exists() and any(target.iterdir()) and not force:
         raise ReforgeError(
             f"{target} already exists and is not empty.",
@@ -368,7 +412,7 @@ def init_repo(source: Optional[Path] = None, target: Optional[Path] = None,
             "choose an empty --path, or pass --force to overwrite only Reforge's own source.",
         )
     target.mkdir(parents=True, exist_ok=True)
-    shipped = manifest(source)
+    shipped = manifest(source, config)
     if not shipped:
         raise ReforgeError(
             f"No Reforge source under {source}.",
@@ -383,14 +427,15 @@ def init_repo(source: Optional[Path] = None, target: Optional[Path] = None,
         _write(target / relative, text)
         written.append(relative)
     synced = {relative: _digest(target / relative) for relative in shipped}
-    _write(target / MARKER, json.dumps({
+    marker_name = config["marker"]
+    _write(target / marker_name, json.dumps({
         "schema": 1,
         "name": "Aegean Reforge",
         "source": str(source),
         "version": __version__,
         "synced": synced,
     }, indent=2) + "\n")
-    written.append(MARKER)
+    written.append(marker_name)
     code, output = _git(target, "init", "--quiet")
     if code != 0:
         raise ReforgeError(
@@ -417,7 +462,8 @@ def sync_repo(source: Optional[Path] = None, target: Optional[Path] = None,
               direction: str = "push", force: bool = False) -> Dict[str, object]:
     """Copy changed shipped files one way, refusing a file both sides changed since the last sync."""
     source = Path(source) if source else source_root()
-    target = Path(target) if target else source / DEFAULT_TARGET
+    config = sync_config(source)
+    target = Path(target) if target else source / config["standalone"]
     if direction not in {"push", "pull"}:
         raise ReforgeError(
             f"Unknown sync direction '{direction}'.",
@@ -425,9 +471,10 @@ def sync_repo(source: Optional[Path] = None, target: Optional[Path] = None,
             "pass --direction push (AIKit to the standalone repo) or pull (the reverse).",
             exit_code=2,
         )
-    marker = _marker(target)
+    marker_name = config["marker"]
+    marker = _marker(target, marker_name)
     synced = marker.get("synced") if isinstance(marker.get("synced"), dict) else {}
-    shipped = manifest(source)
+    shipped = manifest(source, config)
     copied: List[str] = []
     conflicts: List[str] = []
     ahead: List[str] = []
@@ -466,23 +513,25 @@ def sync_repo(source: Optional[Path] = None, target: Optional[Path] = None,
     marker["synced"] = {relative: _digest(target / relative) for relative in shipped}
     marker["source"] = str(source)
     marker["version"] = __version__
-    _write(target / MARKER, json.dumps(marker, indent=2) + "\n")
+    _write(target / marker_name, json.dumps(marker, indent=2) + "\n")
     return {"direction": direction, "copied": copied, "ahead": ahead, "conflicts": conflicts,
-            "path": str(target)}
+            "path": str(target), "config": str(source / SYNC_FILE)}
 
 
 def repo_status(source: Optional[Path] = None, target: Optional[Path] = None) -> Dict[str, object]:
     source = Path(source) if source else source_root()
-    target = Path(target) if target else source / DEFAULT_TARGET
-    marker = _marker(target)
+    config = sync_config(source)
+    target = Path(target) if target else source / config["standalone"]
+    marker = _marker(target, config["marker"])
     synced = marker.get("synced") if isinstance(marker.get("synced"), dict) else {}
-    differing = [relative for relative in manifest(source)
+    differing = [relative for relative in manifest(source, config)
                  if _digest(source / relative) != _digest(target / relative)]
     stale = [relative for relative, digest in synced.items()
              if _digest(target / relative) != digest]
     code, output = run_git(target, "status", "--porcelain")
     return {"path": str(target), "version": marker.get("version"), "differing": differing,
-            "stale_marker": stale, "dirty": bool(output) if code == 0 else True}
+            "stale_marker": stale, "dirty": bool(output) if code == 0 else True,
+            "config": str(source / SYNC_FILE)}
 
 
 def create_release(target: Path, tag: str, message: str = "") -> Dict[str, object]:

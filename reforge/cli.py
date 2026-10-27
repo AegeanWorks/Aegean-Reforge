@@ -302,7 +302,7 @@ def _workspace(args, root: Path, gate_runner: Optional[GateRunner]) -> int:
 
 def _repo(args, aikit_root: Path) -> int:
     import reforge.repo_sync as repo_sync
-    target = getattr(args, "path", None) or (Path(aikit_root) / repo_sync.DEFAULT_TARGET)
+    target = getattr(args, "path", None)
     source = Path(aikit_root)
     if args.repo_action == "init":
         result = repo_sync.init_repo(source, target, force=args.force)
