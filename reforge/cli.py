@@ -11,16 +11,35 @@ from reforge.errors import ReforgeError
 GateRunner = Callable[[], Tuple[bool, Sequence[str]]]
 
 
+def _add_run_selection(command) -> None:
+    command.add_argument("--run", dest="run_id", metavar="ID",
+                         help="audit run id (default: active run, else the latest)")
+
+
+def _add_window_settings(command, defaults: bool) -> None:
+    command.add_argument("--start", type=int, default=3 if defaults else None,
+                         help="first window size, at least 2 (default 3)")
+    command.add_argument("--step", type=int, default=3 if defaults else None,
+                         help="commits added per stage, at least 1 (default 3)")
+    command.add_argument("--stop", type=int, default=None,
+                         help="stop after this window size; 0 means unlimited")
+
+
 def add_commands(subparsers) -> None:
     """Declare every Reforge command once, for either top-level CLI."""
-    audit = subparsers.add_parser("audit", help="analyse the next 3/6/9-commit window")
+    audit = subparsers.add_parser("audit", help="analyse the next window of a run")
     audit.add_argument("target", help="registered project name or repository path")
     audit.add_argument("--json", action="store_true", help="print one machine-readable result")
-    for name, text in (("fix", "repair the latest audit's safe findings"),
+    audit.add_argument("--run", dest="run_id", metavar="ID",
+                       help="audit run id (default: active run, else a new run)")
+    _add_window_settings(audit, defaults=False)
+
+    for name, text in (("fix", "repair the active run's safe findings"),
                        ("run", "audit the next window, then repair it")):
         command = subparsers.add_parser(name, help=text)
         command.add_argument("target", help="registered project name or repository path")
         command.add_argument("--json", action="store_true", help="print one machine-readable result")
+        _add_run_selection(command)
         command.add_argument("--no-tests", action="store_true",
                              help="do not run the project's tests after a repair")
         command.add_argument("--test-command", metavar="CMD",
@@ -33,10 +52,34 @@ def add_commands(subparsers) -> None:
                              help="commit the repair and audit state (explicit paths only)")
         command.add_argument("--push", action="store_true",
                              help="commit, then push without force (implies --commit)")
-    status = subparsers.add_parser("status", help="show the next window and pending findings")
+        if name == "run":
+            _add_window_settings(command, defaults=False)
+
+    start = subparsers.add_parser("start", help="start an independent audit run")
+    start.add_argument("target")
+    start.add_argument("--json", action="store_true")
+    _add_window_settings(start, defaults=True)
+    stop = subparsers.add_parser("stop", help="stop the active audit run and keep its history")
+    stop.add_argument("target")
+    stop.add_argument("--json", action="store_true")
+    _add_run_selection(stop)
+    resume = subparsers.add_parser("resume", help="resume a stopped audit run")
+    resume.add_argument("target")
+    resume.add_argument("--json", action="store_true")
+    _add_run_selection(resume)
+    settings = subparsers.add_parser("settings", help="change a run's step or stop window")
+    settings.add_argument("target")
+    settings.add_argument("--json", action="store_true")
+    _add_run_selection(settings)
+    _add_window_settings(settings, defaults=False)
+    runs = subparsers.add_parser("runs", help="list every audit run and its status")
+    runs.add_argument("target")
+    runs.add_argument("--json", action="store_true")
+
+    status = subparsers.add_parser("status", help="show the active run, next window and pending findings")
     status.add_argument("target")
     status.add_argument("--json", action="store_true")
-    report = subparsers.add_parser("report", help="show the recorded audit stages")
+    report = subparsers.add_parser("report", help="show every audit run and stage")
     report.add_argument("target")
     report.add_argument("--json", action="store_true")
 
@@ -74,8 +117,8 @@ class ReforgeArgumentParser(argparse.ArgumentParser):
 def build_parser() -> argparse.ArgumentParser:
     parser = ReforgeArgumentParser(
         prog="python reforge.py",
-        description="Progressive Git history auditing and autonomous safe repair; "
-                    "3 commits, then 6, then 9, with every earlier finding in view.",
+        description="Progressive Git history auditing and autonomous safe repair. Each project "
+                    "has independent runs; window N is start + step*(N-1), capped by --stop.",
     )
     commands = parser.add_subparsers(dest="command", required=True,
                                      parser_class=ReforgeArgumentParser)
@@ -94,10 +137,24 @@ def _report_error(error: ReforgeError, as_json: bool) -> int:
     return error.exit_code
 
 
+def _run_line(run: Dict[str, object]) -> str:
+    return (f"{run.get('id')} [{run.get('status')}] start={run.get('start')} "
+            f"step={run.get('step')} stop={run.get('stop') or 'none'} "
+            f"stage={run.get('stage')} pending={run.get('pending_fixable')}")
+
+
+def _print_runs(runs: Sequence[Dict[str, object]]) -> None:
+    if not runs:
+        print("  no audit runs yet")
+    for run in runs:
+        print(f"  {_run_line(run)}")
+
+
 def _print_findings(payload: Dict[str, object]) -> None:
     findings = payload.get("findings") or []
-    print(f"Reforge {payload['mode']} stage {payload['stage']} "
-          f"(window {payload['plan']['window']}, {len(payload['plan']['new_commits'])} new commit(s))")
+    plan = payload.get("plan") or {}
+    print(f"Reforge {payload['mode']} {payload.get('run')} stage {payload['stage']} "
+          f"(window {plan.get('window')}, {len(plan.get('new_commits') or [])} new commit(s))")
     for item in findings:
         interaction = f" [{item['interaction']}]" if item.get("interaction") else ""
         print(f"  [{item['category']}/{item['severity']}] {item['path']}:{item['line']} "
@@ -113,11 +170,19 @@ def _print_findings(payload: Dict[str, object]) -> None:
     if not findings:
         print("  no introduced findings")
     if payload["mode"] == "audit" and findings:
-        print(f"Next: python reforge.py fix {payload['root']}  (or run the next audit after fixing)")
+        print(f"Next: python reforge.py fix {payload['root']} --run {payload.get('run')}")
     elif payload["mode"] in {"run", "fix"} and payload.get("repaired"):
         print(f"Next: review the patch in {payload['root']}, then commit with --commit/--push.")
     elif payload["mode"] in {"run", "fix"}:
         print("No safe automatic repair: review the evidence above and fix by hand.")
+    if payload.get("run_status") == "completed":
+        print(f"Run {payload.get('run')} reached its stop and is complete.")
+
+
+def _start_payload(payload: Dict[str, object]) -> None:
+    print(f"[OK] Started {payload['run']['id']} (start={payload['run']['start']}, "
+          f"step={payload['run']['step']}, stop={payload['run']['stop'] or 'none'}).")
+    _print_runs(payload.get("runs") or [])
 
 
 def _workspace(args, root: Path, gate_runner: Optional[GateRunner]) -> int:
@@ -125,35 +190,89 @@ def _workspace(args, root: Path, gate_runner: Optional[GateRunner]) -> int:
     from reforge.delivery import deliver
 
     action = getattr(args, "reforge_action", None) or args.command
+    as_json = bool(getattr(args, "json", False))
     if action == "status":
         payload = pipeline.status_payload(root)
-        if getattr(args, "json", False):
+        if as_json:
             print(json.dumps({"ok": True, "result": payload}, indent=2))
         else:
             print(f"Repository: {payload['root']}")
             print(f"HEAD:       {payload['head'][:12] or 'none'}")
+            run = payload.get("run")
+            print(f"Active run: {payload.get('active_run') or 'none'}"
+                  + (f" ({run['status']})" if run else ""))
+            if run:
+                print(f"Settings:   start={run['start']} step={run['step']} "
+                      f"stop={run['stop'] or 'none'}")
             print(f"Stage:      {payload['stage']} completed; next {payload['next_stage']} "
-                  f"(window {payload['next_window']})")
+                  f"(window {payload['next_window'] or 'none'})")
             print(f"Audited:    {payload['audited_commits']} commit(s)")
-            print(f"Pending:    {payload['pending_findings']} finding(s) in the last audit")
+            print(f"Pending:    {payload['pending_findings']} fixable finding(s)")
+            print("Runs:")
+            _print_runs(payload.get("runs") or [])
+        return 0
+    if action == "runs":
+        payload = pipeline.runs_payload(root)
+        if as_json:
+            print(json.dumps({"ok": True, "result": payload}, indent=2))
+        else:
+            print(f"Audit runs for {payload['root']}:")
+            _print_runs(payload.get("runs") or [])
         return 0
     if action == "report":
         payload = pipeline.report_payload(root)
-        if getattr(args, "json", False):
+        if as_json:
             print(json.dumps({"ok": True, "result": payload}, indent=2))
         else:
-            print(f"Reforge report for {payload['root']}: {payload['stage']} stage(s)")
-            for entry in payload["history"]:
-                counts = ", ".join(f"{k}={v}" for k, v in sorted((entry.get("counts") or {}).items()))
-                print(f"  stage {entry['stage']} window {entry['window']}: "
-                      f"{len(entry.get('new_commits') or [])} new, "
-                      f"{len(entry.get('repairs') or [])} repair(s){' (' + counts + ')' if counts else ''}")
+            print(f"Reforge report for {payload['root']}: {len(payload['runs'])} run(s)")
+            for run in payload["runs"]:
+                pending = len(pipeline.pending_fixable(run))
+                print(f"  {_run_line({**run, 'pending_fixable': pending})}")
+                for entry in run.get("history") or []:
+                    counts = ", ".join(f"{k}={v}" for k, v in
+                                       sorted((entry.get("counts") or {}).items()))
+                    print(f"    stage {entry['stage']} window {entry['window']}: "
+                          f"{len(entry.get('new_commits') or [])} new, "
+                          f"{len(entry.get('repairs') or [])} repair(s)"
+                          f"{' (' + counts + ')' if counts else ''}")
+        return 0
+    if action == "start":
+        payload = pipeline.start_audit(root, start=args.start, step=args.step, stop=args.stop)
+        if as_json:
+            print(json.dumps({"ok": True, "result": payload}, indent=2))
+        else:
+            _start_payload(payload)
+        return 0
+    if action == "stop":
+        payload = pipeline.stop_audit(root, run_id=getattr(args, "run_id", None))
+        if as_json:
+            print(json.dumps({"ok": True, "result": payload}, indent=2))
+        else:
+            print(f"[OK] Stopped {payload['run']['id']}; its history is kept.")
+            _print_runs(payload.get("runs") or [])
+        return 0
+    if action == "resume":
+        payload = pipeline.resume_audit(root, run_id=getattr(args, "run_id", None))
+        if as_json:
+            print(json.dumps({"ok": True, "result": payload}, indent=2))
+        else:
+            print(f"[OK] Resumed {payload['run']['id']} at stage {payload['run']['stage']}.")
+        return 0
+    if action == "settings":
+        payload = pipeline.configure_audit(root, run_id=getattr(args, "run_id", None),
+                                           start=args.start, step=args.step, stop=args.stop)
+        if as_json:
+            print(json.dumps({"ok": True, "result": payload}, indent=2))
+        else:
+            print(f"[OK] {_run_line(payload['run'])}")
         return 0
 
     payload = pipeline.run_pipeline(
         root, mode=action, add_tests=True, run_tests=not getattr(args, "no_tests", False),
         test_command=getattr(args, "test_command", None), gate_runner=gate_runner,
-        allow_dirty=getattr(args, "allow_dirty", False),
+        allow_dirty=getattr(args, "allow_dirty", False), run_id=getattr(args, "run_id", None),
+        start=getattr(args, "start", None), step=getattr(args, "step", None),
+        stop=getattr(args, "stop", None),
     )
     do_commit = bool(getattr(args, "commit", False) or getattr(args, "push", False))
     if do_commit:
@@ -164,14 +283,15 @@ def _workspace(args, root: Path, gate_runner: Optional[GateRunner]) -> int:
                 "run `fix` or `run`, then commit the repair patch.",
                 exit_code=2,
             )
+        run_name = payload.get("run") or "active"
         if payload.get("repaired"):
-            message = f"fix(reforge): repair stage {payload['stage']} findings"
+            message = f"fix(reforge): repair {run_name} stage {payload['stage']} findings"
         else:
-            message = f"chore(reforge): record stage {payload['stage']} audit"
+            message = f"chore(reforge): record {run_name} stage {payload['stage']} audit"
         delivery = deliver(root, message, bool(getattr(args, "push", False)))
         payload["delivery"] = delivery[0]
         payload["delivery_lines"] = delivery[1]
-    if getattr(args, "json", False):
+    if as_json:
         print(json.dumps({"ok": True, "result": payload}, indent=2))
     else:
         _print_findings(payload)

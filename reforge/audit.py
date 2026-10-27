@@ -1,7 +1,7 @@
-"""Progressive 3/6/9 commit-window analysis with cross-commit interaction evidence."""
+"""Configurable progressive commit-window analysis with cross-commit interaction evidence."""
 
 from pathlib import Path
-from typing import Dict, Iterable, List, Sequence, Set, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 from reforge.detectors import detect_source, symbols_in_source
 from reforge.errors import ReforgeError
@@ -15,22 +15,37 @@ from reforge.git_history import (
     is_git_repo,
 )
 from reforge.model import CommitInfo, Finding, StagePlan
-
-STAGE_STEP = 3
-
-
-def window_for_stage(stage: int) -> int:
-    """The documented progression: stage 1 sees 3 commits, stage 2 sees 6, stage 3 sees 9."""
-    return STAGE_STEP * stage
+from reforge.state import DEFAULT_START, DEFAULT_STEP
 
 
-def plan_next_stage(repo: Path, state: Dict[str, object]) -> StagePlan:
-    """The next window, its newly included commits and the already-audited overlap."""
+def window_for_stage(stage: int, start: int = DEFAULT_START, step: int = DEFAULT_STEP,
+                     stop: Optional[int] = None) -> int:
+    """Window N: start + step*(N-1), capped by the run's stop (3,6,9 by default)."""
+    if stage < 1:
+        return 0
+    wanted = start + step * (stage - 1)
+    return min(wanted, stop) if stop is not None else wanted
+
+
+def plan_next_stage(repo: Path, run: Dict[str, object]) -> StagePlan:
+    """The next window for one run, its new commits and its already-audited overlap."""
     if not is_git_repo(repo):
         raise ReforgeError(
             f"{repo} is not a git repository.",
             "Reforge audits commits, so it needs a repository with at least one commit.",
             "run `git init` and commit the code first, or point the command at the repository root.",
+        )
+    if run.get("status") == "completed":
+        raise ReforgeError(
+            f"Audit run {run.get('id')} is complete at its stop of {run.get('stop')} commits.",
+            "a completed run keeps its history and never advances past its configured stop.",
+            "start a new audit run with `reforge start` when more history should be audited.",
+        )
+    if run.get("status") == "stopped":
+        raise ReforgeError(
+            f"Audit run {run.get('id')} is stopped.",
+            "its next stage is waiting for an explicit resume or a new run.",
+            f"resume it with `reforge resume <project> --run {run.get('id')}`, or start a new audit.",
         )
     total = commit_count(repo)
     if total == 0:
@@ -39,23 +54,34 @@ def plan_next_stage(repo: Path, state: Dict[str, object]) -> StagePlan:
             "an empty history has nothing to audit.",
             "commit the code, then run the audit again.",
         )
-    stage = int(state.get("stage") or 0) + 1
-    wanted = window_for_stage(stage)
+    start = int(run.get("start") or DEFAULT_START)
+    step = int(run.get("step") or DEFAULT_STEP)
+    stop = run.get("stop")
+    stage = int(run.get("stage") or 0) + 1
+    previous = int(run.get("window") or 0)
+    wanted = window_for_stage(stage, start, step, stop if isinstance(stop, int) else None)
+    if stop is not None and previous >= int(stop):
+        raise ReforgeError(
+            f"Audit run {run.get('id')} already reached its stop of {stop} commits.",
+            "its stop is the largest window this run may audit.",
+            "start a new audit run, or raise the stop with `reforge settings`.",
+        )
     commits = commit_window(repo, min(wanted, total))
-    audited = set(state.get("audited_commits") or [])
+    audited = set(run.get("audited_commits") or [])
     new_shas = tuple(commit.sha for commit in commits if commit.sha not in audited)
-    # Every earlier analysed commit stays in view for interaction evidence, not only the overlap
-    # inside this window; the window itself still follows the documented 3/6/9 progression.
     new_set = set(new_shas)
-    prior_shas = tuple(sha for sha in (state.get("audited_commits") or []) if sha not in new_set)
+    prior_shas = tuple(sha for sha in (run.get("audited_commits") or []) if sha not in new_set)
     if not new_shas:
         raise ReforgeError(
-            f"No new commits for stage {stage}.",
+            f"No new commits for stage {stage} of {run.get('id')}.",
             f"its window is the newest {min(wanted, total)} commits and every one was already audited.",
-            "push or commit more work, then run the next stage; nothing was changed.",
+            "push or commit more work, raise the window with `reforge settings --step`/`--stop`, "
+            "or stop this run and start a new audit.",
         )
     return StagePlan(stage=stage, window=min(wanted, total), commits=tuple(commits),
-                     new_shas=new_shas, prior_shas=prior_shas)
+                     new_shas=new_shas, prior_shas=prior_shas,
+                     run_id=str(run.get("id") or ""), start=start, step=step,
+                     stop=stop if isinstance(stop, int) else None)
 
 
 def _prior_context(repo: Path, plan: StagePlan, history: Sequence[Dict[str, object]]

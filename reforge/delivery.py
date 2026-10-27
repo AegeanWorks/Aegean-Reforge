@@ -13,6 +13,7 @@ from reforge.git_history import (
     stage_and_commit,
     status_paths,
 )
+from reforge.state import is_reforge_artifact
 
 CONVENTIONAL = re.compile(r"^(?:feat|fix|chore|docs|refactor|test|perf|build|ci)(?:\([^)]+\))?: \S")
 
@@ -42,7 +43,8 @@ def validate_message(message: str) -> None:
 def _paths_to_commit(root: Path) -> List[str]:
     changed = set(status_paths(root))
     changed.update(path for path in dirty_paths(root) if path not in changed)
-    return sorted(path.replace("\\", "/") for path in changed)
+    return sorted(path.replace("\\", "/") for path in changed
+                  if not is_reforge_artifact(path))
 
 
 def commit_repairs(root: Path, message: str, paths: Optional[Sequence[str]] = None) -> Dict[str, object]:

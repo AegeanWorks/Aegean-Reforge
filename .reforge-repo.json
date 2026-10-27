@@ -2,23 +2,24 @@
   "schema": 1,
   "name": "Aegean Reforge",
   "source": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "synced": {
     "reforge.py": "1867319d11fabae49f7e5a4c946a043aaad329c1d39b326cc03fd1135390d73c",
     "reforge/__init__.py": "42af8fbec0caa4adcb9beed4185d46011a33b3f5bbe972ac3810e29ffc95d153",
     "reforge/__main__.py": "2cbb19c94c6e191c2f32c687621d72798c4b39d6409f8a2e5d6a41dc3e217c6c",
-    "reforge/audit.py": "9de48bbe1367cc0e1884290775c69a44e22b3785a89ea308ec4796546df6851d",
-    "reforge/cli.py": "3addc1ec6d9fd0bb133edd7da1fe8549b7cee3f629fa08ffef8755c14465044e",
-    "reforge/delivery.py": "8fedcf62389c919667d483d8f06c769d3388a3d149c012677d48c1b10b0ac8f5",
+    "reforge/audit.py": "23572f9a7bea34e30fa431e245c32bf8f43c7c25139c47fcb46160d2ab7f57c1",
+    "reforge/cli.py": "cec90e4f4f978769fc7b8c20ef279c9470e0736b327a404086b59310abd08b5d",
+    "reforge/delivery.py": "9a2b3062d8d1781416170efe0499ea96e7f599add363c4a28e9d39790dbb8598",
     "reforge/detectors.py": "6ec6abb0b5f40e2e9af7ad8a5d6dfd1636e49e57d36530b0cef85c47f5b926fa",
     "reforge/errors.py": "32bd85eac70ba9b8ab05bfba54d349d9d004d28d70bb36804f9449b7bd6ad8e7",
     "reforge/git_history.py": "641610d4b87d77b887af6842fa5f14e235fea7413d4fc3aeae1ee316ed2a64f1",
-    "reforge/model.py": "d28946f4908ce1c8d47da53b2d8c57452a5be56032bc5615e78fcc4b60cd1615",
-    "reforge/pipeline.py": "d82bcf7b03014b396b43025bf7a0f6441b56a9612b2b68ea7400ebbf3920837e",
+    "reforge/locking.py": "0d387b720b6f9263c12735d10df1876cd3bb9515171a4018d63eb289235344ba",
+    "reforge/model.py": "d23b88832006ec8a1ee4c583af627d96ccd7109d600b8ae2a586446c9559d7bf",
+    "reforge/pipeline.py": "9fd4eda717f6974453c0080e2da28bd9a14738664da4f90e4bc0afe053d2495f",
     "reforge/repair.py": "dd827814a9ce35a5a13bf7ade4c23b3c396a0479daa6991d56368b209a59768c",
-    "reforge/repo_sync.py": "b3aaa36701fda375bd40781b9be25fed6d58977b0fe6176dab49786a92e52beb",
-    "reforge/state.py": "4ce922e93944b3002bba7b7376a5e1b139ec1a1c8fb87600cec6cac0a4afd941",
+    "reforge/repo_sync.py": "12e58fa0d725f552e5c1856dafec5f3d6795af664e0e2b0e5124e3d2e1ec6ab5",
+    "reforge/state.py": "935498d8610b9327faf41d1e1bf9a6940c1be9f95bea344e71f04c0ba71d4455",
     "reforge/verification.py": "1938d5665c01a28c1ddb6b3e6e0d076a63fa3a3ddac7875f551c0dccd73cfcb5",
-    "reforge/version.py": "a6116d8e2fe232d2820ff769693419f690192c755a20781b3484bd4a145a0c38"
+    "reforge/version.py": "7ba746b771bd85312d24ca56b909181acf184f914b4a7fa8a835114a3eab79f8"
   }
 }

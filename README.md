@@ -2,10 +2,12 @@
 
 > Progressive, evidence-backed Git history auditing and autonomous safe repair.
 
-Aegean Reforge walks a repository's history in stages: it audits the newest 3 commits, repairs
-what it can prove, and after those repairs are pushed it audits the newest 6 (the previous 3 plus
-3 new), then 9, and so on. Every stage re-examines the overlap, so a new commit is judged against
-the changes already analysed.
+Aegean Reforge walks a repository's history in independent runs. A run starts at `--start`, grows
+by `--step` per stage and stops at `--stop` (defaults 3/3, unlimited): 3, 6, 9, ... or 4, 6, 8, 10.
+After a repair is accepted the next stage re-examines the overlap, so a new commit is judged
+against the changes already analysed. Runs can be stopped, resumed, reconfigured and started again
+later with different settings; each keeps its own history. Each project has its own run lock, so
+several projects audit concurrently and a second operation on one project is refused.
 
 ## Quick Start
 
@@ -28,17 +30,25 @@ python -m unittest discover tests
 ## Commands
 
 ```bash
-python reforge.py audit <repo-or-project> --json
-python reforge.py run <repo-or-project>
-python reforge.py run <repo-or-project> --push
-python reforge.py status <repo-or-project>
-python reforge.py report <repo-or-project>
+python reforge.py start <repo> --start 3 --step 3 --stop 15  # one independent run
+python reforge.py run <repo>              # audit, repair, add regression tests, verify
+python reforge.py run <repo> --push       # commit explicit paths, push without force
+python reforge.py audit <repo>            # analyse the next window; no edits
+python reforge.py fix <repo>              # repair the active run's safe findings
+python reforge.py stop <repo> --run run-1
+python reforge.py resume <repo> --run run-1
+python reforge.py settings <repo> --step 4 --stop 20
+python reforge.py runs <repo> --json
+python reforge.py status <repo>
+python reforge.py report <repo>
 python reforge.py repo init [--path <dir>]
 python reforge.py repo sync [--direction push|pull] [--force]
 ```
 
-The audit state lives in `.aikit/reforge.json` and records each stage, every audited commit, the
-findings, repairs, test results and gate results.
+The audit state lives in `.aikit/reforge.json` and records each independent run: its settings,
+stage windows, audited commits, findings, repairs, test results and gate results. A per-project
+lock (`.aikit/reforge.run.lock`) prevents a second operation on the same project; different
+projects use different locks and states and run concurrently.
 
 ## License
 

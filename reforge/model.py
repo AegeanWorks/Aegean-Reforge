@@ -1,7 +1,7 @@
 """Immutable values shared by Reforge's audit, repair, persistence and CLI layers."""
 
 from dataclasses import dataclass, field
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 
 @dataclass(frozen=True)
@@ -80,13 +80,17 @@ class Repair:
 
 @dataclass(frozen=True)
 class StagePlan:
-    """The progressive history window for one audit stage."""
+    """The progressive history window for one audit stage of one named run."""
 
     stage: int
     window: int
     commits: Tuple[CommitInfo, ...] = field(default_factory=tuple)
     new_shas: Tuple[str, ...] = field(default_factory=tuple)
     prior_shas: Tuple[str, ...] = field(default_factory=tuple)
+    run_id: str = ""
+    start: int = 3
+    step: int = 3
+    stop: Optional[int] = None
 
     @property
     def has_new_commits(self) -> bool:
@@ -94,8 +98,12 @@ class StagePlan:
 
     def as_dict(self) -> Dict[str, object]:
         return {
+            "run": self.run_id,
             "stage": self.stage,
             "window": self.window,
+            "start": self.start,
+            "step": self.step,
+            "stop": self.stop,
             "commits": len(self.commits),
             "new_commits": list(self.new_shas),
             "prior_commits": list(self.prior_shas),
