@@ -1,0 +1,11 @@
+version = 1
+SPDX-PackageName = "Aegean Reforge"
+SPDX-PackageSupplier = "Aegean Works"
+SPDX-PackageDownloadLocation = "NOASSERTION"
+SPDX-PackageComment = "Free personal use under AL-1.1; commercial use under ACL-1.0."
+
+[[annotations]]
+path = "."
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Aegean Works"
+SPDX-License-Identifier = "LicenseRef-AL-1.1"

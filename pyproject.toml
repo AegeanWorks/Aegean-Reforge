@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aegean-reforge"
+version = "0.1.0"
+description = "Progressive Git history auditing and autonomous safe repair"
+requires-python = ">=3.10"
+license = {text = "AL-1.1"}
+
+[project.scripts]
+reforge = "reforge.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["reforge*"]
