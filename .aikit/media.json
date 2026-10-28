@@ -14,40 +14,20 @@
   "layout": "split",
   "assets": {
     "logo": {
-      "path": "assets/logo.png",
-      "status": "approved",
-      "commit": "",
-      "generated_at": "2026-10-28T13:53:44",
-      "review": {
-        "status": "approved",
-        "reviewer": "subagent:brand-review",
-        "method": "vision",
-        "notes": "AR monogram badge, DEVELOPER TOOL eyebrow, Aegean Reforge single line, lightning/electric background fits audit+repair, no footer, no clipping.",
-        "score": 91,
-        "reviewed_at": "2026-10-28T14:00:02"
-      }
-    },
-    "social_preview": {
-      "path": "assets/social-preview.png",
-      "status": "approved",
-      "commit": "",
-      "generated_at": "2026-10-28T13:53:44",
-      "review": {
-        "status": "approved",
-        "reviewer": "subagent:brand-review",
-        "method": "vision",
-        "notes": "Tagline 'Progressive Git history audit with evidence-backed repairs.' complete. Single chip (library). Lightning imagery fits audit/repair theme. Clean layout, no defects.",
-        "score": 88,
-        "reviewed_at": "2026-10-28T14:00:02"
-      }
-    },
-    "artwork": {
-      "path": "assets/artwork.jpg",
+      "path": "assets/logo.jpg",
       "status": "pending_review",
       "commit": "",
-      "generated_at": "2026-10-28T13:34:47",
+      "generated_at": "2026-10-28T16:48:27",
+      "review": null
+    },
+    "social_preview": {
+      "path": "assets/social-preview.jpg",
+      "status": "pending_review",
+      "commit": "",
+      "generated_at": "2026-10-28T16:48:27",
       "review": null
     }
   },
-  "screenshots": []
+  "screenshots": [],
+  "model": "community/scriptsnsenses-sys/flux-2-dev-free"
 }
