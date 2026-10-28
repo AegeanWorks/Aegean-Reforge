@@ -1,20 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
-  <title id="title">Aegean-Reforge social preview</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc" data-motif="branch" data-layout="split">
+  <title id="title">Aegean Reforge social preview</title>
   <desc id="desc">Progressive, evidence-backed Git history auditing and autonomous safe repair.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#1e293b"/></linearGradient>
-    <radialGradient id="glow" cx="0.2" cy="0.15" r="0.9"><stop offset="0" stop-color="#f472b6" stop-opacity="0.30"/><stop offset="1" stop-color="#f472b6" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071018"/><stop offset="1" stop-color="#0b2638"/></linearGradient>
+    <radialGradient id="glow" cx="0.2" cy="0.12" r="0.95"><stop offset="0" stop-color="#2dd4bf" stop-opacity="0.28"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></radialGradient>
+    <linearGradient id="band" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#f59e0b"/></linearGradient>
   </defs>
   <rect width="1280" height="640" fill="url(#bg)"/>
   <rect width="1280" height="640" fill="url(#glow)"/>
-  <g opacity="0.16" stroke="#f8fafc">
-    <path d="M0 160h1280M0 320h1280M0 480h1280M256 0v640M512 0v640M768 0v640M1024 0v640"/>
+  <path d="M0 0H470L300 640H0Z" fill="#2dd4bf" fill-opacity="0.09"/><path d="M470 0L300 640" stroke="#2dd4bf" stroke-opacity="0.30" stroke-width="2"/>
+  <g opacity="0.15" stroke="#F8FAFC">
+    <path d="M0 128H1280M0 256H1280M0 384H1280M0 512H1280M256 0V640M512 0V640M768 0V640M1024 0V640"/>
   </g>
-  <rect x="64" y="112" width="176" height="176" rx="42" fill="#0b1220" stroke="#f472b6" stroke-opacity="0.55" stroke-width="2"/>
-  <circle cx="152" cy="200" r="58" fill="none" stroke="#f472b6" stroke-opacity="0.45" stroke-width="2"/>
-  <text x="152" y="224" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="700" fill="#f472b6">AR</text>
-  <text x="300" y="192" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="700" fill="#f8fafc">Aegean-Reforge</text>
-  <text x="300" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="34" fill="#f8fafc" fill-opacity="0.78">Progressive, evidence-backed Git history auditing</text><text x="300" y="298" font-family="Segoe UI, Arial, sans-serif" font-size="34" fill="#f8fafc" fill-opacity="0.78">and autonomous safe repair.</text>
-  <text x="64" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="22" letter-spacing="6" fill="#f8fafc" fill-opacity="0.55">AEGEANWORKS · CLI</text>
-  <text x="1216" y="560" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#f472b6">github.com/AegeanWorks/Aegean-Reforge</text>
+  <g transform="translate(245 320) scale(1.9)" opacity="1.0"><path d="M-42 42V-34M-42 8C-18 8 2 -6 26 -32M-42 8C-18 8 2 22 26 42" fill="none" stroke="#2dd4bf" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="-42" cy="46" r="9" fill="#2dd4bf"/><circle cx="26" cy="-34" r="9" fill="#f59e0b"/><circle cx="26" cy="46" r="9" fill="#f59e0b"/><path d="M-42 -34V-46" fill="none" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="548" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="76" font-weight="700" fill="#F8FAFC">Aegean Reforge</text><text x="550" y="292" font-family="Segoe UI, Arial, sans-serif" font-size="21" letter-spacing="5" fill="#2dd4bf">AEGEANWORKS · CLI</text>
+  <text x="550" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#F8FAFC" fill-opacity="0.74">Progressive, evidence-backed Git history auditing</text><text x="550" y="386" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#F8FAFC" fill-opacity="0.74">and autonomous safe repair.</text>
+  <rect x="550" y="500" width="56" height="38" rx="19" fill="#0B1220" fill-opacity="0.55" stroke="#94A3B8" stroke-opacity="0.35"/><text x="578.0" y="525" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#F8FAFC" fill-opacity="0.82">cli</text><rect x="698" y="500" width="136" height="38" rx="19" fill="#0B1220" fill-opacity="0.55" stroke="#94A3B8" stroke-opacity="0.35"/><text x="766.0" y="525" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#F8FAFC" fill-opacity="0.82">aegeanworks</text><rect x="786" y="500" width="106" height="38" rx="19" fill="#0B1220" fill-opacity="0.55" stroke="#94A3B8" stroke-opacity="0.35"/><text x="839.0" y="525" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#F8FAFC" fill-opacity="0.82">software</text>
+  <text x="76" y="592" font-family="Segoe UI, Arial, sans-serif" font-size="19" letter-spacing="6" fill="#F8FAFC" fill-opacity="0.50">AEGEANWORKS</text>
+  <text x="1204" y="592" text-anchor="end" font-family="Segoe UI, Arial, sans-serif" font-size="20" fill="#2dd4bf">github.com/AegeanWorks/Aegean-Reforge</text>
 </svg>

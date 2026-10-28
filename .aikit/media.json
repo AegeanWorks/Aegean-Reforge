@@ -5,52 +5,54 @@
   "has_ui": false,
   "ui_kind": "cli",
   "palette": [
-    "#0b1220",
-    "#1e293b",
-    "#f472b6",
-    "#f8fafc"
+    "#071018",
+    "#0b2638",
+    "#2dd4bf",
+    "#f59e0b"
   ],
+  "motif": "branch",
+  "layout": "split",
   "assets": {
     "logo": {
       "path": "assets/logo.svg",
       "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T01:12:00",
+      "generated_at": "2026-10-28T09:04:52",
       "review": {
         "status": "approved",
-        "reviewer": "agent:kilo",
-        "method": "structural",
-        "notes": "The monogram, palette and title are generated from the project's own name and README positioning; SVG structure and dimensions pass the validator.",
-        "score": null,
-        "reviewed_at": "2026-10-28T01:12:50"
+        "reviewer": "subagent:vision-review",
+        "method": "vision",
+        "notes": "Stylized K with teal shaft and orange commit nodes clearly evokes a git branch graph; distinctive, centered, balanced within rounded square, legible at small size with large dots and clean AR wordmark. Coherent teal/orange/dark palette.",
+        "score": 88,
+        "reviewed_at": "2026-10-28T09:05:59"
       }
     },
     "social_preview": {
       "path": "assets/social-preview.svg",
       "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T01:12:00",
+      "generated_at": "2026-10-28T09:04:52",
       "review": {
         "status": "approved",
-        "reviewer": "agent:kilo",
-        "method": "structural",
-        "notes": "The monogram, palette and title are generated from the project's own name and README positioning; SVG structure and dimensions pass the validator.",
-        "score": null,
-        "reviewed_at": "2026-10-28T01:12:50"
+        "reviewer": "subagent:vision-review",
+        "method": "vision",
+        "notes": "Same mark and palette as logo for a coherent identity. Large 'Aegean Reforge' title and tagline readable and unclipped on dark grid background. Minor clip on the right-edge pill button text ('aegeanworks software') slightly reduces polish.",
+        "score": 85,
+        "reviewed_at": "2026-10-28T09:05:59"
       }
     },
     "social_preview_png": {
       "path": "assets/social-preview.png",
       "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T01:12:02",
+      "generated_at": "2026-10-28T09:04:54",
       "review": {
         "status": "approved",
-        "reviewer": "agent:kilo",
+        "reviewer": "subagent:vision-review",
         "method": "structural",
-        "notes": "The rendered preview is 1280x640, carries the project name and matches the approved SVG.",
+        "notes": "Rendered 1280x640 from the approved branch-card SVG; dimensions verified.",
         "score": null,
-        "reviewed_at": "2026-10-28T01:12:50"
+        "reviewed_at": "2026-10-28T09:05:59"
       }
     }
   },
