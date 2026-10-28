@@ -17,35 +17,35 @@
       "path": "assets/logo.png",
       "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T11:51:47",
+      "generated_at": "2026-10-28T13:53:44",
       "review": {
         "status": "approved",
-        "reviewer": "subagent:vision-review",
+        "reviewer": "subagent:brand-review",
         "method": "vision",
-        "notes": "Premium AI-art identity with crisp exact text, legible monogram and strong hierarchy.",
-        "score": null,
-        "reviewed_at": "2026-10-28T11:53:08"
+        "notes": "AR monogram badge, DEVELOPER TOOL eyebrow, Aegean Reforge single line, lightning/electric background fits audit+repair, no footer, no clipping.",
+        "score": 91,
+        "reviewed_at": "2026-10-28T14:00:02"
       }
     },
     "social_preview": {
       "path": "assets/social-preview.png",
       "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T11:51:47",
+      "generated_at": "2026-10-28T13:53:44",
       "review": {
         "status": "approved",
-        "reviewer": "subagent:vision-review",
+        "reviewer": "subagent:brand-review",
         "method": "vision",
-        "notes": "Premium AI-art identity with crisp exact text, legible monogram and strong hierarchy.",
-        "score": null,
-        "reviewed_at": "2026-10-28T11:53:08"
+        "notes": "Tagline 'Progressive Git history audit with evidence-backed repairs.' complete. Single chip (library). Lightning imagery fits audit/repair theme. Clean layout, no defects.",
+        "score": 88,
+        "reviewed_at": "2026-10-28T14:00:02"
       }
     },
     "artwork": {
       "path": "assets/artwork.jpg",
       "status": "pending_review",
       "commit": "",
-      "generated_at": "2026-10-28T11:51:47",
+      "generated_at": "2026-10-28T13:34:47",
       "review": null
     }
   },
