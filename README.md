@@ -2,7 +2,6 @@
 
 <!-- aegean:media:start -->
 <p align="center"><img src="assets/social-preview.png" alt="Aegean-Reforge social preview" width="100%"></p>
-*The banner and logo are AI-generated brand assets. They are illustrative and may not literally depict every feature or the full project scope.*
 <!-- aegean:media:end -->
 
 > Progressive, evidence-backed Git history auditing and autonomous safe repair.
@@ -54,6 +53,12 @@ The audit state lives in `.aikit/reforge.json` and records each independent run:
 stage windows, audited commits, findings, repairs, test results and gate results. A per-project
 lock (`.aikit/reforge.run.lock`) prevents a second operation on the same project; different
 projects use different locks and states and run concurrently.
+
+<!-- aegean:brand-assets:start -->
+## 🎨 Brand Assets
+
+> **AI-Generated Brand Artwork.** The banner and logo are **AI-generated brand assets**. They are illustrative and may not literally depict every feature or the full project scope.
+<!-- aegean:brand-assets:end -->
 
 ## License
 
