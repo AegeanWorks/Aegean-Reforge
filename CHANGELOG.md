@@ -2,6 +2,11 @@
 
 All notable changes to Aegean Reforge are recorded here.
 
+## [0.3.0] - 2026-10-28
+
+- Reforge is integrated into AIKit: `reforge/` and `reforge.py` are its only source.
+- The standalone repository and its two-way sync layer are removed; this repository is archived.
+
 ## [0.2.1] - 2026-10-27
 
 - `reforge-sync.json` names the shipped package, shim, standalone target and marker.

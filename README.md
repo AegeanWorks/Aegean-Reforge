@@ -1,4 +1,10 @@
-# Aegean Reforge
+# Aegean Reforge (archived)
+
+> **This repository is archived.** Aegean Reforge is now integrated into
+> **[AegeanWorks/AIKit](https://github.com/AegeanWorks/AIKit)**, where `reforge/` and `reforge.py`
+> are the only source of truth. Install or clone AIKit to use it:
+> `python aikit.py reforge --help` (AIKit project registry) or `python reforge.py --help`.
+> This archive keeps the history, tags and issues readable; do not open new pull requests here.
 
 <!-- aegean:media:start -->
 <p align="center"><img src="assets/social-preview.png" alt="Aegean-Reforge social preview" width="100%"></p>
