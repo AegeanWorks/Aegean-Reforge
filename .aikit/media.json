@@ -14,46 +14,39 @@
   "layout": "split",
   "assets": {
     "logo": {
-      "path": "assets/logo.svg",
+      "path": "assets/logo.png",
       "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T09:04:52",
+      "generated_at": "2026-10-28T11:51:47",
       "review": {
         "status": "approved",
         "reviewer": "subagent:vision-review",
         "method": "vision",
-        "notes": "Stylized K with teal shaft and orange commit nodes clearly evokes a git branch graph; distinctive, centered, balanced within rounded square, legible at small size with large dots and clean AR wordmark. Coherent teal/orange/dark palette.",
-        "score": 88,
-        "reviewed_at": "2026-10-28T09:05:59"
+        "notes": "Premium AI-art identity with crisp exact text, legible monogram and strong hierarchy.",
+        "score": null,
+        "reviewed_at": "2026-10-28T11:53:08"
       }
     },
     "social_preview": {
-      "path": "assets/social-preview.svg",
+      "path": "assets/social-preview.png",
       "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T09:04:52",
+      "generated_at": "2026-10-28T11:51:47",
       "review": {
         "status": "approved",
         "reviewer": "subagent:vision-review",
         "method": "vision",
-        "notes": "Same mark and palette as logo for a coherent identity. Large 'Aegean Reforge' title and tagline readable and unclipped on dark grid background. Minor clip on the right-edge pill button text ('aegeanworks software') slightly reduces polish.",
-        "score": 85,
-        "reviewed_at": "2026-10-28T09:05:59"
+        "notes": "Premium AI-art identity with crisp exact text, legible monogram and strong hierarchy.",
+        "score": null,
+        "reviewed_at": "2026-10-28T11:53:08"
       }
     },
-    "social_preview_png": {
-      "path": "assets/social-preview.png",
-      "status": "approved",
+    "artwork": {
+      "path": "assets/artwork.jpg",
+      "status": "pending_review",
       "commit": "",
-      "generated_at": "2026-10-28T09:04:54",
-      "review": {
-        "status": "approved",
-        "reviewer": "subagent:vision-review",
-        "method": "structural",
-        "notes": "Rendered 1280x640 from the approved branch-card SVG; dimensions verified.",
-        "score": null,
-        "reviewed_at": "2026-10-28T09:05:59"
-      }
+      "generated_at": "2026-10-28T11:51:47",
+      "review": null
     }
   },
   "screenshots": []
