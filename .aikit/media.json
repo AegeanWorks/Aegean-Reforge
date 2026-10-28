@@ -15,17 +15,31 @@
   "assets": {
     "logo": {
       "path": "assets/logo.jpg",
-      "status": "pending_review",
+      "status": "approved",
       "commit": "",
       "generated_at": "2026-10-28T16:48:27",
-      "review": null
+      "review": {
+        "status": "approved",
+        "reviewer": "subagent:vision-review",
+        "method": "vision",
+        "notes": "Aegean Reforge / DEVELOPER TOOL none",
+        "score": 87,
+        "reviewed_at": "2026-10-28T17:52:10"
+      }
     },
     "social_preview": {
-      "path": "assets/social-preview.jpg",
-      "status": "pending_review",
+      "path": "assets/social-preview.png",
+      "status": "approved",
       "commit": "",
-      "generated_at": "2026-10-28T16:48:27",
-      "review": null
+      "generated_at": "2026-10-28T17:41:21",
+      "review": {
+        "status": "approved",
+        "reviewer": "subagent:vision-review",
+        "method": "vision",
+        "notes": "Aegean Reforge\\nDEVELOPER TOOL",
+        "score": 96,
+        "reviewed_at": "2026-10-28T17:52:10"
+      }
     }
   },
   "screenshots": [],

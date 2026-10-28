@@ -1,7 +1,7 @@
 # Aegean Reforge
 
 <!-- aegean:media:start -->
-<p align="center"><img src="assets/logo.png" alt="Aegean-Reforge logo" width="96" height="96"></p>
+<p align="center"><img src="assets/logo.jpg" alt="Aegean-Reforge logo" width="96" height="96"></p>
 <p align="center"><img src="assets/social-preview.png" alt="Aegean-Reforge social preview" width="100%"></p>
 <!-- aegean:media:end -->
 
